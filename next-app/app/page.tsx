@@ -1,160 +1,68 @@
-const stats = [
-  { label: '지금 지원 가능', value: '3개', hint: '육군 2, 공군 1' },
-  { label: '조건부 가능', value: '5개', hint: '자격증 보완 필요' },
-  { label: '다음 마감', value: '5일', hint: '기술행정병 접수 마감' },
-  { label: '위험 알림', value: '2건', hint: '서류·발급 일정 확인 필요' },
-];
+import Link from 'next/link';
 
-const recommendations = [
-  {
-    title: '육군 기술행정병 전기정비',
-    badge: '지금 지원 가능',
-    tone: 'success',
-    items: ['전공 직접 일치', '전기기능사 보유 시 매우 유리', '신체조건 충족', '다음 일정: 3월 29일 접수 마감'],
-  },
-  {
-    title: '공군 일반기계',
-    badge: '조건부 가능',
-    tone: 'warning',
-    items: ['전공 간접 일치', '관련 자격증 추가 시 점수 상승', '시력 기준 재확인 필요', '다음 일정: 4월 8일 모집 시작'],
-  },
-  {
-    title: '카투사',
-    badge: '현재 불가',
-    tone: 'danger',
-    items: ['전공 무관', '어학점수 부족', '신체조건은 충족', '하반기 공고 대기'],
-  },
-];
-
-const docs = [
-  '와이어프레임 문서',
-  'Firebase Studio용 마스터 생성 프롬프트',
-  'Firestore 컬렉션/보안 규칙 초안',
-  '추천 로직 의사코드',
-  'MVP 화면별 개발 체크리스트',
-];
+import { PlannerWorkspace } from '@/components/planner-workspace';
+import { SectionCard } from '@/components/section-card';
+import { StatusBadge } from '@/components/status-badge';
+import { TrustBadge } from '@/components/trust-badge';
+import { getPlannerSnapshot } from '@/lib/recommendation';
 
 export default function HomePage() {
+  const snapshot = getPlannerSnapshot();
+
   return (
-    <main>
-      <section className="hero">
-        <span className="badge warning">비공식 서비스</span>
-        <h1>군지원 플래너</h1>
-        <p>
-          병무청, 육군, 해군, 공군, 카투사 관련 정보를 한곳에 정리하고 사용자의 전공, 자격증,
-          신체조건, 희망 입영 시기를 바탕으로 지금 지원 가능한 분야와 필요한 준비를 빠르게
-          판단하는 실용형 웹앱입니다.
+    <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6">
+      <section className="rounded-[28px] border border-slate-200 bg-white px-6 py-6 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3">
+          <TrustBadge label="비공식 서비스" tone="warning" />
+          <TrustBadge label="최종 확인은 병무청 공식 사이트" tone="info" />
+        </div>
+        <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">나는 어디 지원 가능한가</h1>
+        <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-600 sm:text-base">
+          군지원 플래너는 징집, 모집병, 기술행정병, 공군, 해군, 카투사의 차이를 빠르게 정리하고 사용자의 전공, 자격증, 어학점수, 신체조건, 희망 입영 시기를 바탕으로 지금 가능한 지원 경로와 다음 행동을 바로 보여주는 판단 도구입니다.
         </p>
-        <div className="actions">
-          <a className="button primary" href="#recommend">
-            추천 결과 보기
-          </a>
-          <a className="button" href="#docs">
-            문서 확인
-          </a>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href="/recommend" className="rounded-2xl bg-[var(--navy)] px-4 py-3 text-sm font-semibold text-white">추천 결과 보기</Link>
+          <Link href="/guide" className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold">개념 먼저 이해하기</Link>
         </div>
       </section>
 
-      <section className="section">
-        <div className="sectionHeader">
-          <div>
-            <h2>핵심 상태</h2>
-            <p>사용자가 가장 먼저 알아야 할 지원 가능 여부와 마감 리스크를 한 화면에 모읍니다.</p>
+      <section className="grid gap-4 md:grid-cols-4">
+        {snapshot.summary.map((item) => (
+          <div key={item.label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-slate-500">{item.label}</p>
+            <p className="mt-2 text-3xl font-bold text-slate-950">{item.value}</p>
+            <p className="mt-1 text-sm text-slate-600">{item.hint}</p>
           </div>
-          <span className="badge info">판단형 정보</span>
-        </div>
-        <div className="stats">
-          {stats.map((stat) => (
-            <article className="stat" key={stat.label}>
-              <small>{stat.label}</small>
-              <strong>{stat.value}</strong>
-              <div className="meta">{stat.hint}</div>
-            </article>
-          ))}
-        </div>
+        ))}
       </section>
 
-      <section className="section" id="recommend">
-        <div className="sectionHeader">
-          <div>
-            <h2>추천 결과</h2>
-            <p>지금 지원 가능, 조건부 가능, 현재 불가를 즉시 구분합니다.</p>
-          </div>
-          <span className="badge success">추천 엔진 1차</span>
-        </div>
-        <div className="cards">
-          {recommendations.map((item) => (
-            <article className="card" key={item.title}>
-              <div className="cardHeader">
-                <h3>{item.title}</h3>
-                <span className={`badge ${item.tone}`}>{item.badge}</span>
-              </div>
-              <ul>
-                {item.items.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+      <div className="grid gap-6 xl:grid-cols-[1.4fr_0.8fr]">
+        <PlannerWorkspace />
 
-      <section className="section gridTwo">
-        <article className="card">
-          <div className="sectionHeader">
-            <div>
-              <h2>온보딩 입력 항목</h2>
-              <p>처음 보는 사용자도 3분 안에 추천 결과로 진입할 수 있게 설계합니다.</p>
-            </div>
-            <span className="badge info">MVP</span>
-          </div>
-          <ul>
-            <li>출생연도</li>
-            <li>희망 군 복수선택</li>
-            <li>희망 입영 시기</li>
-            <li>전공명과 학교 유형</li>
-            <li>보유 자격증과 어학점수</li>
-            <li>신체등급, 시력, 색약 여부</li>
-            <li>중요 기준 선택</li>
-          </ul>
-        </article>
-
-        <article className="card">
-          <div className="sectionHeader">
-            <div>
-              <h2>오늘 할 일</h2>
-              <p>설명보다 행동을 유도하는 체크리스트 중심 구조입니다.</p>
-            </div>
-            <span className="badge warning">우선순위</span>
-          </div>
-          <ul>
-            <li>전공명과 학적 상태를 공식 서류 기준으로 다시 확인하기</li>
-            <li>자격증 발급 가능일이 접수 마감 전인지 점검하기</li>
-            <li>어학성적 유효기간과 제출 방식을 확인하기</li>
-            <li>관심 특기와 추가모집 알림을 모두 켜기</li>
-          </ul>
-        </article>
-      </section>
-
-      <section className="section" id="docs">
-        <div className="sectionHeader">
-          <div>
-            <h2>Firebase Studio 연동 준비물</h2>
-            <p>저장소 루트 문서와 함께 Firebase Studio에서 바로 이어서 설계할 수 있도록 정리했습니다.</p>
-          </div>
-          <span className="badge">문서 세트</span>
-        </div>
-        <div className="docs">
-          <article className="docCard">
-            <h3>포함 문서</h3>
-            <ul>
-              {docs.map((doc) => (
-                <li key={doc}>{doc}</li>
+        <div className="flex flex-col gap-6">
+          <SectionCard title="오늘 해야 할 일" description="긴 설명보다 지금 당장 해야 할 행동을 먼저 제시합니다." right={<StatusBadge status="warning">우선순위</StatusBadge>}>
+            <ul className="space-y-3 text-sm leading-6 text-slate-700">
+              {snapshot.todayActions.map((action) => (
+                <li key={action} className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">{action}</li>
               ))}
             </ul>
-          </article>
+          </SectionCard>
+
+          <SectionCard title="선착순 / 추가모집 레이더" description="관심 군과 특기를 저장하면 공지 변동을 감지해 알림으로 연결합니다." right={<TrustBadge label="공식 공지 기반" tone="success" />}>
+            <div className="space-y-3">
+              {snapshot.alertRadar.map((item) => (
+                <div key={item.title} className="rounded-2xl border border-slate-200 px-4 py-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-semibold text-slate-900">{item.title}</p>
+                    <StatusBadge status={item.status}>{item.badge}</StatusBadge>
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </SectionCard>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
