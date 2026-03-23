@@ -1,50 +1,51 @@
-# Welcome to your Expo app 👋
+# 군지원 플래너
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+군지원 플래너는 병무청 및 각 군의 모집 정보를 사용자가 빠르게 판단할 수 있도록 정리하는 비공식 실용형 앱입니다.
 
-## Get started
+## 핵심 목표
 
-1. Install dependencies
+- 어떤 방식으로 군대에 갈 수 있는지 빠르게 이해하기
+- 지금 지원 가능한 분야를 조건 기반으로 바로 확인하기
+- 무엇을 더 준비해야 하는지 체크리스트로 정리하기
+- 언제까지 해야 하는지 일정과 마감 리스크로 확인하기
 
-   ```bash
-   npm install
-   ```
+## 실행 방법
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+1. 의존성 설치
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. 개발 서버 실행
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. 웹으로 확인
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run web
+```
 
-## Join the community
+## 현재 구성
 
-Join our community of developers creating universal apps.
+- `app/`: Expo Router 기반 화면
+- `components/`: 공용 UI 컴포넌트
+- `constants/`: 테마 및 목업 데이터
+- `docs/`: 와이어프레임, Firestore 초안, 추천 로직 문서
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 주요 문서
+
+- `docs/wireframe.md`
+- `docs/firebase-studio-master-prompt.md`
+- `docs/firestore-rules-and-schema.md`
+- `docs/recommendation-pseudocode.md`
+- `docs/mvp-screen-checklist.md`
+
+## 주의 사항
+
+- 이 앱은 정부 공식 서비스가 아닙니다.
+- 최종 지원 전에는 병무청 및 각 군 공식 사이트를 반드시 다시 확인해야 합니다.
+- 민감한 개인정보는 최소한으로 다루는 방향을 기준으로 설계합니다.
