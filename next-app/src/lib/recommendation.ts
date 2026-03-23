@@ -16,6 +16,10 @@ import type {
   UserProfile,
 } from '@/types/planner';
 
+function normalizeText(value: string) {
+  return value.toLowerCase().replace(/\s+/g, '');
+}
+
 export function getUpcomingRecruitmentWindows(specialtyId: string) {
   return recruitNotices
     .filter((notice) => notice.specialtyId === specialtyId)
@@ -235,4 +239,33 @@ export function getPlannerSnapshot() {
       },
     ],
   };
+}
+
+export function filterRecommendationsByQuery(
+  recommendations: RecommendationResult[],
+  query: string
+) {
+  const normalizedQuery = normalizeText(query);
+
+  if (!normalizedQuery) {
+    return recommendations;
+  }
+
+  return recommendations.filter((result) => {
+    const haystacks = [
+      result.branch,
+      result.specialtyName,
+      result.statusLabel,
+      result.majorFit,
+      result.certificateFit,
+      result.physicalFit,
+      result.nextRecruitmentLabel,
+      result.nextAction,
+      ...result.reasons,
+      ...result.documents,
+      ...result.sources.map((source) => source.label),
+    ];
+
+    return haystacks.some((value) => normalizeText(value).includes(normalizedQuery));
+  });
 }
